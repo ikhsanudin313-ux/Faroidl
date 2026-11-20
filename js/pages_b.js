@@ -175,7 +175,7 @@ function pewarisForm(k, isNew) {
     '<div class="two"><label class="lbl">Jenis kelamin<select class="sel w100" name="Jenis_Kelamin_Pewaris" id="pfJk"><option' + (k && k.Jenis_Kelamin_Pewaris === 'Laki-laki' ? ' selected' : '') + '>Laki-laki</option><option' + (k && k.Jenis_Kelamin_Pewaris === 'Perempuan' ? ' selected' : '') + '>Perempuan</option></select></label>' +
     '<label class="lbl">Tanggal wafat<input class="inp" type="date" name="Tgl_Wafat" required value="' + esc(k ? k.Tgl_Wafat : '') + '" max="' + new Date().toISOString().slice(0, 10) + '"></label></div>' +
     '<div class="two"><label class="lbl">Pasangan hidup saat wafat<select class="sel w100" name="Status_Pasangan"><option value="Ada"' + (!k || k.Status_Pasangan === 'Ada' ? ' selected' : '') + '>Ada</option><option value="Tidak Ada"' + (k && k.Status_Pasangan === 'Tidak Ada' ? ' selected' : '') + '>Tidak ada</option></select></label>' +
-    (sup && isNew ? '<label class="lbl">Pengurus berwenang (kelompok akun)<select class="sel w100" name="ID_Kelompok">' + S.D.kelompok.map(g => '<option value="' + esc(g.ID_Kelompok) + '">' + esc(g.Nama_Kelompok) + '</option>').join('') + '</select></label>' : '<div></div>') + '</div>' +
+    (sup ? '<label class="lbl">Pengurus berwenang (kelompok akun)<select class="sel w100" name="ID_Kelompok">' + S.D.kelompok.map(g => '<option value="' + esc(g.ID_Kelompok) + '"' + (k && k.ID_Kelompok === g.ID_Kelompok ? ' selected' : '') + '>' + esc(g.Nama_Kelompok) + (g.Keterangan ? ' — ' + esc(g.Keterangan) : '') + ' (' + esc(g.ID_Kelompok) + ')</option>').join('') + '</select></label>' : '<div></div>') + '</div>' +
     '<div class="form-err" id="pfErr" role="alert" hidden></div></form>';
 }
 function submitPewaris(isNew) {
@@ -192,7 +192,7 @@ function submitPewaris(isNew) {
   } else {
     const k = curKasus();
     const gantiJk = k.Jenis_Kelamin_Pewaris !== fd.get('Jenis_Kelamin_Pewaris');
-    Object.assign(k, { Nama_Pewaris: nama, Jenis_Kelamin_Pewaris: fd.get('Jenis_Kelamin_Pewaris'), Tgl_Wafat: tgl, Status_Pasangan: fd.get('Status_Pasangan'), Desa: String(fd.get('Desa') || '').trim(), Daerah: String(fd.get('Daerah') || '').trim(), Nama_Ayah: String(fd.get('Nama_Ayah') || '').trim(), Tgl_Lahir: String(fd.get('Tgl_Lahir') || '') });
+    Object.assign(k, { ID_Kelompok: isAll() ? kel : k.ID_Kelompok, Nama_Pewaris: nama, Jenis_Kelamin_Pewaris: fd.get('Jenis_Kelamin_Pewaris'), Tgl_Wafat: tgl, Status_Pasangan: fd.get('Status_Pasangan'), Desa: String(fd.get('Desa') || '').trim(), Daerah: String(fd.get('Daerah') || '').trim(), Nama_Ayah: String(fd.get('Nama_Ayah') || '').trim(), Tgl_Lahir: String(fd.get('Tgl_Lahir') || '') });
     if (gantiJk) { const n = S.D.ahli.filter(a => a.ID_Kasus === k.ID_Kasus && (a.Hubungan === 'suami' || a.Hubungan === 'istri')).length; if (n) { S.D.ahli = S.D.ahli.filter(a => !(a.ID_Kasus === k.ID_Kasus && (a.Hubungan === 'suami' || a.Hubungan === 'istri'))); toast('Jenis kelamin berubah: data pasangan dihapus, tambahkan kembali.', 'warn'); } }
     closeModal(); commit(k.ID_Kasus, { now: true }); renderKalkulator();
   }
