@@ -262,7 +262,7 @@ function exportRekap() {
   const k = curKasus(); if (!k || !xlsxReady()) return;
   const wb = XLSX.utils.book_new(), R = rekapOf(k.ID_Kasus);
   XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(hartaOf(k.ID_Kasus).map(h => ({ Harta: h.Nama_Harta, Jenis: h.Jenis, Kategori: h.Kategori, 'Nilai (Rp)': Number(h.Nilai) || 0, Keterangan: h.Keterangan }))), 'Catatan Harta');
-  XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet([{ 'Total harta': R.total, Gonogini: R.gonogini, 'Bagian pasangan': R.bagianPasangan, Bawaan: R.bawaan, Peninggalan: R.peninggalan, 'Biaya jenazah': Number(k.Biaya_Jenazah) || 0, Utang: Number(k.Utang) || 0, 'Wasiat berlaku': R.wasiatEfektif, 'Harta waris bersih': R.bersih }]), 'Rekap');
+  XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet([{ 'Total harta': R.total, Gonogini: R.gonogini, 'Bagian pasangan': R.bagianPasangan, Bawaan: R.bawaan, Peninggalan: R.peninggalan, 'Biaya jenazah': Number(k.Biaya_Jenazah) || 0, 'Catatan biaya jenazah': k.Catatan_Biaya || '', Utang: Number(k.Utang) || 0, 'Catatan utang': k.Catatan_Utang || '', 'Wasiat berlaku': R.wasiatEfektif, 'Catatan wasiat': k.Catatan_Wasiat || '', 'Hibah semasa hidup (dicatat)': Number(k.Hibah) || 0, 'Catatan hibah': k.Catatan_Hibah || '', 'Harta waris bersih': R.bersih }]), 'Rekap');
   saveXlsx(wb, 'Rekap_Harta_' + k.ID_Kasus + '.xlsx');
 }
 function exportKasus() {

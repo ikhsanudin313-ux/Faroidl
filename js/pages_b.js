@@ -51,11 +51,13 @@ function renderKalkulator() {
       '<div class="card-f"><div class="sec-h"><div><h2 class="h-sec"><i class="bi bi-journal-check"></i> Hak Terkait Jenazah Sebelum Pembagian Waris</h2></div></div>' +
         '<p class="muted sm">Urutan penunaian hak atas harta peninggalan: (1) biaya pengurusan jenazah, (2) pelunasan utang, (3) wasiat sah (maksimal ⅓).</p>' +
         '<div class="pot-grid">' +
-          '<label class="pot"><span class="pot-n">1</span><span class="pot-t"><b>Biaya Pengurusan Jenazah</b><em>Memandikan, kafan, ambulans, liang lahat</em></span><span class="money-in"><i>Rp</i><input class="inp money" inputmode="numeric" data-in="k-biaya" value="' + fmtMoney(k.Biaya_Jenazah) + '" aria-label="Biaya jenazah"></span></label>' +
-          '<label class="pot"><span class="pot-n">2</span><span class="pot-t"><b>Pelunasan Utang Pewaris</b><em>Utang yang masih menjadi tanggungan</em></span><span class="money-in"><i>Rp</i><input class="inp money" inputmode="numeric" data-in="k-utang" value="' + fmtMoney(k.Utang) + '" aria-label="Utang pewaris"></span></label>' +
+          '<label class="pot"><span class="pot-n">1</span><span class="pot-t"><b>Biaya Pengurusan Jenazah</b><em>Memandikan, kafan, ambulans, liang lahat</em></span><span class="money-in"><i>Rp</i><input class="inp money" inputmode="numeric" data-in="k-biaya" value="' + fmtMoney(k.Biaya_Jenazah) + '" aria-label="Biaya jenazah"></span><input class="inp pot-note" maxlength="300" data-in="c-biaya" value="' + esc(k.Catatan_Biaya) + '" placeholder="Catatan (opsional): mis. rincian kafan, ambulans, liang lahat" aria-label="Catatan biaya jenazah"></label>' +
+          '<label class="pot"><span class="pot-n">2</span><span class="pot-t"><b>Pelunasan Utang Pewaris</b><em>Utang yang masih menjadi tanggungan</em></span><span class="money-in"><i>Rp</i><input class="inp money" inputmode="numeric" data-in="k-utang" value="' + fmtMoney(k.Utang) + '" aria-label="Utang pewaris"></span><input class="inp pot-note" maxlength="300" data-in="c-utang" value="' + esc(k.Catatan_Utang) + '" placeholder="Catatan (opsional): mis. kepada siapa, bukti/saksi" aria-label="Catatan utang"></label>' +
           '<div id="kalcPot"></div>' +
-          '<label class="pot"><span class="pot-n">3</span><span class="pot-t"><b>Wasiat Pewaris</b><em>Maksimal ⅓ dari sisa harta</em></span><span class="money-in"><i>Rp</i><input class="inp money" inputmode="numeric" data-in="k-wasiat" value="' + fmtMoney(k.Wasiat) + '" aria-label="Wasiat"></span></label>' +
-          '<div id="kalcWas"></div></div></div>' +
+          '<label class="pot"><span class="pot-n">3</span><span class="pot-t"><b>Wasiat Pewaris</b><em>Maksimal ⅓ dari sisa harta</em></span><span class="money-in"><i>Rp</i><input class="inp money" inputmode="numeric" data-in="k-wasiat" value="' + fmtMoney(k.Wasiat) + '" aria-label="Wasiat"></span><input class="inp pot-note" maxlength="300" data-in="c-wasiat" value="' + esc(k.Catatan_Wasiat) + '" placeholder="Catatan (opsional): mis. penerima wasiat, tujuan" aria-label="Catatan wasiat"></label>' +
+          '<div id="kalcWas"></div>' +
+          '<label class="pot"><span class="pot-n">4</span><span class="pot-t"><b>Hibah Semasa Hidup</b><em>Pemberian pewaris sebelum wafat. Hanya dicatat, tidak mengurangi harta waris</em></span><span class="money-in"><i>Rp</i><input class="inp money" inputmode="numeric" data-in="k-hibah" value="' + fmtMoney(k.Hibah) + '" aria-label="Hibah"></span><input class="inp pot-note" maxlength="300" data-in="c-hibah" value="' + esc(k.Catatan_Hibah) + '" placeholder="Catatan (opsional): mis. penerima hibah, objek, tanggal" aria-label="Catatan hibah"></label>' +
+          '</div></div>' +
     '</div>' +
 
     '<aside class="kal-side"><div id="kalcSide"></div>' +
@@ -185,7 +187,7 @@ function submitPewaris(isNew) {
   if (!kel) { err.hidden = false; err.textContent = 'Belum ada kelompok. Buat kelompok terlebih dahulu di menu Referensi & Aturan.'; return; }
   if (isNew) {
     const k = { ID_Kasus: newKasusId(), ID_Kelompok: kel, Nama_Pewaris: nama, Jenis_Kelamin_Pewaris: fd.get('Jenis_Kelamin_Pewaris'), Tgl_Wafat: tgl, Status_Pasangan: fd.get('Status_Pasangan'), Desa: String(fd.get('Desa') || '').trim(), Daerah: String(fd.get('Daerah') || '').trim(), Nama_Ayah: String(fd.get('Nama_Ayah') || '').trim(), Tgl_Lahir: String(fd.get('Tgl_Lahir') || ''),
-      Porsi_Gonogini_Pasangan: 50, Alasan_Perubahan_Porsi: '', Biaya_Jenazah: 0, Utang: 0, Wasiat: 0, Status: 'Draft Berkas', Dibuat_Oleh: S.user.Email, Tgl_Input: new Date().toISOString().slice(0, 10) };
+      Porsi_Gonogini_Pasangan: 50, Alasan_Perubahan_Porsi: '', Biaya_Jenazah: 0, Utang: 0, Wasiat: 0, Hibah: 0, Status: 'Draft Berkas', Dibuat_Oleh: S.user.Email, Tgl_Input: new Date().toISOString().slice(0, 10) };
     S.D.kasus.unshift(k); S.ui.kasusId = k.ID_Kasus; closeModal(); commit(k.ID_Kasus, { now: true }); go('kalkulator'); toast('Kasus dibuat. Silakan catat harta pewaris.', 'ok');
   } else {
     const k = curKasus();

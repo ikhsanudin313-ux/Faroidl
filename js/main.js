@@ -221,6 +221,11 @@ document.addEventListener('input', e => {
     case 'k-biaya': if (k) { k.Biaya_Jenazah = parseMoney(t.value); commit(k.ID_Kasus, { keepStatus: false }); kalcRefresh(); } return;
     case 'k-utang': if (k) { k.Utang = parseMoney(t.value); commit(k.ID_Kasus); kalcRefresh(); } return;
     case 'k-wasiat': if (k) { k.Wasiat = parseMoney(t.value); commit(k.ID_Kasus); kalcRefresh(); } return;
+    case 'c-biaya': if (k) { k.Catatan_Biaya = t.value; commit(k.ID_Kasus); } return;
+    case 'c-utang': if (k) { k.Catatan_Utang = t.value; commit(k.ID_Kasus); } return;
+    case 'c-wasiat': if (k) { k.Catatan_Wasiat = t.value; commit(k.ID_Kasus); } return;
+    case 'k-hibah': if (k) { k.Hibah = parseMoney(t.value); commit(k.ID_Kasus); } return;
+    case 'c-hibah': if (k) { k.Catatan_Hibah = t.value; commit(k.ID_Kasus); } return;
     case 'h-nilai': { const h = S.D.harta.find(x => x.ID_Harta === t.dataset.id); if (h && k) { h.Nilai = parseMoney(t.value); commit(k.ID_Kasus); kalcRefresh(); } return; }
   }
   if (t.id === 'fQ') { clearTimeout(qTimer); qTimer = setTimeout(() => { S.ui.q = t.value; S.ui.pg = 1; renderKasusTable(); }, 180); }
